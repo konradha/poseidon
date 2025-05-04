@@ -5,7 +5,7 @@ dataset:
 num_trajectories:
   value: 11000
 batch_size:
-  value: 32
+  value: 4
 num_epochs:
   value: 70
 lr:

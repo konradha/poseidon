@@ -5,7 +5,6 @@ import numpy as np
 from glob import glob
 from scOT.problems.base import BaseTimeDataset
 
-
 class NonlinearWave(BaseTimeDataset):
     def __init__(
         self, 
@@ -16,16 +15,22 @@ class NonlinearWave(BaseTimeDataset):
         **kwargs
     ):
         super().__init__(*args, data_path=data_path, **kwargs)
+        assert self.max_num_time_steps * self.time_step_size <= 20
+        
         self.file_paths = sorted(glob(os.path.join(self.data_path, "*.h5")))
         self.total_files = len(self.file_paths)
+        
         self.N_max = self.total_files
-        self.N_val = int(self.total_files * 0.1)
-        self.N_test = int(self.total_files * 0.1)
-        max_val_test = self.total_files // 3
-        if self.N_val > max_val_test:
-            self.N_val = max_val_test
-        if self.N_test > max_val_test:
-            self.N_test = max_val_test
+        val_ratio = min(0.1, 200/self.total_files)
+        test_ratio = min(0.1, 200/self.total_files)
+        
+        self.N_val = max(int(self.total_files * val_ratio), 10)
+        self.N_test = max(int(self.total_files * test_ratio), 10)
+        
+        available_for_train = self.N_max - self.N_val - self.N_test
+        if available_for_train <= 0:
+            self.N_val = int(self.N_max * 0.2)
+            self.N_test = int(self.N_max * 0.2)
         
         with h5py.File(self.file_paths[0], 'r') as f:
             u_data = f['u']
@@ -37,9 +42,14 @@ class NonlinearWave(BaseTimeDataset):
         self.input_dim = 2
         self.label_description = "[u,v]"
         self.output_dim = 2
+        
         if normalize and not hasattr(self, 'constants'):
             self.compute_normalization_constants()
-        self.constants["time"] = self.max_snapshots
+        
+        if not hasattr(self, 'constants'):
+            self.constants = {}
+            
+        self.constants["time"] = float(self.max_snapshots)
         self.post_init()
         
     def compute_normalization_constants(self):
@@ -75,7 +85,7 @@ class NonlinearWave(BaseTimeDataset):
             u_traj = torch.from_numpy(f['u'][:self.max_snapshots]).float()
             v_traj = torch.from_numpy(f['v'][:self.max_snapshots]).float()
             u0 = u_traj[0] 
-            v0 = u_traj[0]
+            v0 = v_traj[0]
             
             u0 = u0.reshape(1, self.resolution, self.resolution)
             v0 = v0.reshape(1, self.resolution, self.resolution)
