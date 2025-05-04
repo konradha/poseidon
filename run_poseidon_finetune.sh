@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=poseidon_finetune
-#SBATCH --ntasks=16
-#SBATCH --mem-per-cpu=32G
-#SBATCH --time=24:00:00
+#SBATCH --ntasks=4
+#SBATCH --mem-per-cpu=16G
+#SBATCH --time=12:00:00
 #SBATCH --gpus-per-node=1
 #SBATCH --output=logs/%j/poseidon_finetune_%A_%a.out
 #SBATCH --error=logs/%j/poseidon_finetune_%A_%a.err
@@ -19,6 +19,8 @@ mkdir -p wandb
 
 export WANDB_MODE=offline
 export WANDB_DIR="./wandb"
+export TF_CPP_MIN_LOG_LEVEL=2
+export TF_ENABLE_ONEDNN_OPTS=0
 
 case ${SLURM_ARRAY_TASK_ID} in
   0)
@@ -39,14 +41,14 @@ case ${SLURM_ARRAY_TASK_ID} in
 esac
 
 RUN_NAME="nlwave_${MODEL_SIZE}_finetune"
-CKPT_DIR="checkpoints/${RUN_NAME}"
+CKPT_DIR="$SCRATCH/poseidon_checkpoints/${RUN_NAME}"
 mkdir -p ${CKPT_DIR}
 
 accelerate launch scOT/train.py \
     --config ${CONFIG} \
     --wandb_run_name ${RUN_NAME} \
-    --wandb_project_name "poseidon_finetune" \
+    --wandb_project_name "poseidon-finetune" \
     --checkpoint_path ${CKPT_DIR} \
-    --data_path "$SCRATCH/nlwaves" \
+    --data_path "$SCRATCH/kge_2d_curated" \
     --finetune_from "${MODEL_PATH}" \
     --replace_embedding_recovery

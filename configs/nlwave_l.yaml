@@ -1,13 +1,13 @@
 model_name:
-  value: "T"
+  value: "L"
 dataset:
   value: "wave.nonlinear"
 num_trajectories:
-  value: 1000
+  value: 11000
 batch_size:
-  value: 4
+  value: 32
 num_epochs:
-  value: 50
+  value: 70
 lr:
   value: 0.0001
 lr_embedding_recovery:

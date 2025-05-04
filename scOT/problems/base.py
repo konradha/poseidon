@@ -145,13 +145,14 @@ def get_dataset(dataset, **kwargs):
                 default_time_settings = {"max_num_time_steps": 7, "time_step_size": 2}
             kwargs = {**default_time_settings, **kwargs}
             from .wave.acoustic import Gaussians as dset
-        elif "wave.nonlinear_wave" in dataset:
-            if "out" in dataset: # unclear
-                raise ValueError(f"Unknown dataset {dataset}")
+        elif "wave.nonlinear" in dataset:
+            from .wave.nonlinear import NonlinearWave as dset
+            # what the hell does this mean
+            if "out" in dataset:
+                default_time_settings = {"max_num_time_steps": 10, "time_step_size": 2}
             else:
-                default_time_settings = {"max_num_time_steps": 200, "time_step_size": 1}
+                default_time_settings = {"max_num_time_steps": 7, "time_step_size": 2}
             kwargs = {**default_time_settings, **kwargs}
-            from .wave.nonlinear_wave import NonlinearWave as dset
         else:
             raise ValueError(f"Unknown dataset {dataset}")
     elif "reaction_diffusion" in dataset:
