@@ -1,0 +1,12 @@
+model_name: "T"
+dataset: "wave.nonlinear"
+num_trajectories: 1000 # this might need work
+batch_size: 32
+num_epochs: 50
+lr: 0.0001
+lr_embedding_recovery: 0.001
+weight_decay: 0.0001
+max_grad_norm: 1.0
+lr_scheduler: "cosine"
+warmup_ratio: 0.1
+early_stopping_patience: 10
