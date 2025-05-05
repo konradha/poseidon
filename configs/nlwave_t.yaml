@@ -41,7 +41,13 @@ load_best_model_at_end:
   value: true
 metric_for_best_model:
   value: loss
+prediction_loss_only:
+  value: false
+include_inputs_for_metrics:
+  value: true
 greater_is_better:
   value: false
 disable_tqdm:
   value: true
+debug:
+  value: "WANDB,OVERFLOW"

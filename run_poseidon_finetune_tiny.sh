@@ -2,7 +2,7 @@
 #SBATCH --job-name=poseidon_finetune_t
 #SBATCH --ntasks=4
 #SBATCH --mem-per-cpu=16G
-#SBATCH --time=12:00:00
+#SBATCH --time=02:00:00
 #SBATCH --gpus-per-node=1
 #SBATCH --output=logs/%j/poseidon_finetune_t_%A_%a.out
 #SBATCH --error=logs/%j/poseidon_finetune_t_%A_%a.err
@@ -34,6 +34,6 @@ accelerate launch scOT/train.py \
     --wandb_run_name ${RUN_NAME} \
     --wandb_project_name "poseidon-finetune" \
     --checkpoint_path ${CKPT_DIR} \
-    --data_path "$SCRATCH/kge_2d_curated_physical" \
+    --data_path "$SCRATCH/kge_2d_curated" \
     --finetune_from "${MODEL_PATH}" \
     --replace_embedding_recovery

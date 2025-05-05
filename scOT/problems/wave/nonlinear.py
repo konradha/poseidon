@@ -12,7 +12,7 @@ class NonlinearWave(BaseTimeDataset):
         data_path=None,
         max_snapshots=None,
         normalize=False,
-        normalization_type="minmax",
+        normalization_type="standardize",
         **kwargs
     ):
         super().__init__(*args, data_path=data_path, **kwargs)
@@ -46,7 +46,7 @@ class NonlinearWave(BaseTimeDataset):
         
         self.normalize = normalize
         self.input_dim = 2
-        self.label_description = "[u,v]"
+        self.label_description = "[u,u]"
         self.output_dim = 2
         
         if normalize and not hasattr(self, 'constants'):
@@ -123,6 +123,7 @@ class NonlinearWave(BaseTimeDataset):
             
             u0 = u0.reshape(1, self.resolution, self.resolution)
             v0 = v0.reshape(1, self.resolution, self.resolution)
+
            
             if self.normalize:
                 u0 = self.normalize_data(u0, "u")
@@ -131,18 +132,19 @@ class NonlinearWave(BaseTimeDataset):
                 v_traj = self.normalize_data(v_traj, "v")
         
         if t1 == 0:
-            input_state = torch.cat([u0, v0], dim=0)
+            #input_state = torch.cat([u0, v0], dim=0)
+            input_state = u0
         else:
             t1_idx = min(t1, len(u_traj) - 1)
             input_state = torch.cat([
                 u_traj[t1_idx].unsqueeze(0),
-                v_traj[t1_idx].unsqueeze(0)
+                #u_traj[t1_idx].unsqueeze(0)
             ], dim=0)
         
         t2_idx = min(t2, len(u_traj) - 1)
         labels = torch.cat([
             u_traj[t2_idx].unsqueeze(0),
-            v_traj[t2_idx].unsqueeze(0)
+            #u_traj[t2_idx].unsqueeze(0)
         ], dim=0)
         time_value = t2 / self.num_snapshots
         
