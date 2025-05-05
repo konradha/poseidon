@@ -1,24 +1,47 @@
+---
 model_name:
-  value: "B"
+  value: B
 dataset:
-  value: "wave.nonlinear"
+  value: wave.nonlinear
 num_trajectories:
-  value: 8000
+  value: 200
 batch_size:
-  value: 8
+  value: 40
 num_epochs:
-  value: 70
+  value: 50
 lr:
-  value: 0.0001
+  value: 0.00005
 lr_embedding_recovery:
-  value: 0.001
+  value: 0.0005
+lr_time_embedding:
+  value: 0.0005
 weight_decay:
-  value: 0.0001
+  value: 0.000001
 max_grad_norm:
-  value: 1.0
+  value: 5
 lr_scheduler:
-  value: "cosine"
+  value: cosine
 warmup_ratio:
-  value: 0.1
+  value: 0
 early_stopping_patience:
-  value: 10
+  value: 5
+logging_steps:
+  value: 2
+evaluation_strategy:
+  value: steps
+eval_steps:
+  value: 20
+save_strategy:
+  value: steps
+save_steps:
+  value: 100
+save_total_limit:
+  value: 3
+load_best_model_at_end:
+  value: true
+metric_for_best_model:
+  value: loss
+greater_is_better:
+  value: false
+disable_tqdm:
+  value: true
